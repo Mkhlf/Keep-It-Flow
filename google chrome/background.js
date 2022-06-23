@@ -146,8 +146,8 @@ function getID(title){
             
             if (tabs[i].title== title){
              const lmfao = 'chrome'
-             console.log(lmfao)
-              `${lmfao}`.storage.local.set({titleID: tabs[i].id}, function() {
+            
+              chrome.storage.local.set({titleID: tabs[i].id}, function() {
                 console.log('Value is set to ' + tabs[i].id);
               });
 
