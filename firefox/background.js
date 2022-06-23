@@ -32,13 +32,12 @@ async function getTab(tabId) {
   return tab;
 }
 
-// take the tab to toggled, and the newstate
+// take the tab to be toggled, and its newstate
 async function toggleMute(tabId, state = true) {
   let currTab = await getTab(tabId);
   if (currTab === null || currTab.muted === state) return;
   await browser.tabs.update(tabId, { muted: state });
 }
-
 
 // Set the initial empty tab
 browser.storage.local.set({ choice: null });
@@ -53,13 +52,9 @@ browser.storage.onChanged.addListener(async function (changes) {
   console.log(`Old title is : ${oldTitle}`);
   if (newTitle !== oldTitle) {
     if (mainTab !== null) {
-      // mainTab.removeEventListener('onUpdated');
+      return;
     }
-    console.log('***************');
-    console.log(mainTab);
-    console.log('***************');
     mainTab = parseInt(newTitle);
-    // mainTab.addEventListener('onUpdated', keepItFlow());
     console.log('mainTap is :', mainTab);
     toggleMute(mainTab, false);
     await querybrowser();
@@ -87,5 +82,6 @@ browser.tabs.onUpdated.addListener(async function (tabid) {
 }, {
   properties: ["audible"]
 });
+
 // calling the main functions
 querybrowser();
