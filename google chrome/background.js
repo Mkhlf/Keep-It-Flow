@@ -145,7 +145,8 @@ function getID(title){
           for(let i = 0; i<tabs.length;i++){
             
             if (tabs[i].title== title){
-             
+             const lmfao = 'chrome'
+            
               chrome.storage.local.set({titleID: tabs[i].id}, function() {
                 console.log('Value is set to ' + tabs[i].id);
               });
@@ -161,7 +162,7 @@ function getID(title){
                 
           }
           keepItFlow()
-          setInterval(keepItFlow(),1000)
+          
   
           }
   
@@ -184,31 +185,20 @@ function getID(title){
 
 
 
-function keepItFlow(){
+async function  keepItFlow(){
+
+let value;
+ value = await chrome.storage.local.get(['titleID']).then(
+
+result => result.titleID
+
+ )
 
 
- id= chrome.storage.local.get(['titleID'], function(result) {
-
-   
-
-  chrome.tabs.query(
-
-{audible:true},function(tabs){
-
-console.log(tabs)
-
-}
+console.log(value)
 
 
 
-  )
-
-
-
-
-
-
-  });
 
 
 
