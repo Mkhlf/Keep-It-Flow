@@ -1,0 +1,23 @@
+{
+  "browser_specific_settings": {
+    "gecko": {
+      "strict_min_version": "58.0a1"
+    }
+  },
+  "background": {
+      "scripts": ["background.js"]
+  },
+  "browser_action": {
+    "browser_style": true,
+    "default_title": "Keep it flow",
+    "default_popup": "popup.html"
+  },
+  "description": "This extension will help you focus while managing the sounds in the background.",
+  "manifest_version": 2,
+  "name": "Keep it flow",
+  "permissions": [
+    "tabs",
+    "storage"
+  ],
+  "version": "1.0"
+}
