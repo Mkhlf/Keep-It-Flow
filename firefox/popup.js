@@ -3,70 +3,61 @@ const choicePicked = document.querySelector("#picked")
 let mainTab = null;
 queryTabs();
 
+// get the tab from the current tab id
 async function getTab(tabId) {
   if (tabId === null) return null;
   let tab = await browser.tabs.get(parseInt(tabId));
   return tab;
 }
 
-//To check which tab did the user picked:
+//To check which tab did the user picked
 
 optionsTabs.addEventListener('change', async (event) => {
-  // console.log(event.target.value);
   let newOptionId = event.target;
   console.log(newOptionId.value);
   mainTab = newOptionId.value;
   let myTab = await getTab(mainTab);
   choicePicked.innerText = myTab.title;
-  // console.log(getTab(mainTab).title);
+
   browser.storage.local.set({ choice: mainTab, choiceTitle: myTab.title }, function () {
     console.log('Picked Tab is :', choicePicked.innerText);
   });
 })
 
+// helper function that takes a tab and addit to current lablist
 async function addNewOption(tab) {
-  // console.log(`Adding a new tab : ${tab.title}`);
-  // console.log('---------');
+
   mainTab = await browser.storage.local.get('choice');
   mainTab = mainTab['choice'];
-  // console.log(typeof (mainTab));
-  // console.log(mainTab);
   if (mainTab !== null)
     mainTab = parseInt(mainTab);
 
-  // console.log('hereeee', mainTab, tab.id);
   let newOption = document.createElement('option');
   newOption.value = tab.id;
   newOption.text = tab.title;
   if (mainTab !== null && mainTab === tab.id) {
-    // console.log('here');
     newOption.selected = true;
-    // alert(mainTab)
   }
-  // console.log('---------');
   optionsTabs.appendChild(newOption);
 
 }
 
+//check the current tabs and add them to the dropdown menu
 async function queryTabs() {
-
   let mainTabTitle = await browser.storage.local.get('choiceTitle');
-
   if (mainTabTitle !== null)
-    choicePicked.innerText = mainTabTitle['choiceTitle'];
-  // console.log()
+    choicePicked.innerText = mainTabTitle['choiceTitle']; // show the last selection
   if (optionsTabs.innerHTML !== '')
-    optionsTabs.innerHTML = '';
+    optionsTabs.innerHTML = ''; // reset the dropdown menue
   browser.tabs.query({})
     .then((tabs) => {
-      for (let tab of tabs) {
+      for (let tab of tabs) { // loop over all the tabs
         addNewOption(tab);
       }
-      // console.log('yeah all tabs added !!');
     });
 }
 
-//update the current tablist
+//update the current tablist if a tab was added, removed, or changed by any mean.
 browser.tabs.onRemoved.addListener(
   () => {
     queryTabs();
