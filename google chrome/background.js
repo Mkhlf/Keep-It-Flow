@@ -4,7 +4,7 @@
 function queryChrome(){
 
     chrome.tabs.query(
-        {currentWindow: true},
+        {},
             function(tabs){
               console.log(tabs)
 
@@ -15,10 +15,11 @@ function queryChrome(){
                   console.log("Tab id  : "+tabs[i].id)
                  
                    // toggleMuteState(tabs[4].id)
-                    tabsInfo(tabs)
+                  
+                  
                   
             }
-
+            tabsReturner(tabs)
 
             }
 
@@ -31,11 +32,23 @@ function queryChrome(){
 
 
 function toggleMuteState(tabId) {
-    chrome.tabs.get(tabId, async (tab) => {
-      let muted = !tab.mutedInfo.muted;
-      await chrome.tabs.update(tabId, { muted });
-    });
-  }
+  chrome.tabs.get(tabId, async (tab) => {
+    let muted = true;
+    
+    await chrome.tabs.update(tabId, { muted });
+    console.log(`Should be muted`)
+  });
+}
+
+
+function unToggleMuteState(tabId) {
+  chrome.tabs.get(tabId, async (tab) => {
+    let muted = false;
+  
+    await chrome.tabs.update(tabId, { muted });
+    console.log(`Should be unmuted`)
+  });
+}
 
 
 
@@ -43,7 +56,9 @@ function toggleMuteState(tabId) {
 
 
 
-function tabsInfo(listOfTabs){
+
+
+function tabsReturner(listOfTabs){
 
   chrome.storage.local.set({tabsReturned: listOfTabs}, function() {
     console.log('Value is set to ' + listOfTabs);
@@ -82,7 +97,7 @@ chrome.tabs.onMoved.addListener(
 chrome.tabs.onUpdated.addListener(
   function(){
     queryChrome()
-   
+    keepItFlow()
   
   }
 )
@@ -99,20 +114,16 @@ chrome.storage.local.set({choice: " "}, function() {
 chrome.storage.onChanged.addListener(
   (function(changes){
 
-
-    console.log(changes['choice'])
-
-   
+   console.log(changes)
       var newTitle= changes['choice']['newValue']
-      var oldTitle= changes['choice']['oldValue']
-   console.log(`New title is : ${newTitle}`)
-   console.log(`Old title is : ${oldTitle}`)
+      
 
-       if(newTitle != oldTitle){
+
+       
         getID(newTitle);
 
         console.log("Ran getID")
-       }
+       
  
 
    
@@ -128,49 +139,25 @@ chrome.storage.onChanged.addListener(
 
 
 
-function getID(title){
+async function getID(title){
 
 
 
+tabsInfo  = await tabsQuery()
+
+for (let i=0; i<tabsInfo.length; i++){
+ 
+  if (tabsInfo[i].title== title){
+ 
+    chrome.storage.local.set({titleID: tabsInfo[i].id}, function() {
+      console.log('Value is set to ' + tabsInfo[i].id);
+    });
+
+  }
 
 
-
-
-
-
-    chrome.tabs.query(
-      {},
-          function(tabs){
-            console.log(tabs)
-          for(let i = 0; i<tabs.length;i++){
-            
-            if (tabs[i].title== title){
-             const lmfao = 'chrome'
-            
-              chrome.storage.local.set({titleID: tabs[i].id}, function() {
-                console.log('Value is set to ' + tabs[i].id);
-              });
-
-
-
-
-           
-          
-  
-            }
-           
-                
-          }
-          keepItFlow()
-          
-  
-          }
-  
-  
-  
-    )
-
-
+}
+keepItFlow()
 
 
 
@@ -185,19 +172,37 @@ function getID(title){
 
 
 
+
+
 async function  keepItFlow(){
 
-let value;
- value = await chrome.storage.local.get(['titleID']).then(
+let lectureID;
+ lectureID = await chrome.storage.local.get(['titleID']).then(
 
 result => result.titleID
 
  )
 
+console.log("The lecture id is : ",lectureID)
 
-console.log(value)
+
+let tabsInfo = await tabsQuery()
+
+for(let i =0; i<tabsInfo.length; i++){
 
 
+if(tabsInfo[i].id == lectureID && tabsInfo[i].audible==true)
+{
+  console.log("is running")
+  muteTabs(lectureID)
+
+}
+else{
+  console.log("is bruh ")
+ // unMuteTabs(lectureID)
+}
+
+}
 
 
 
@@ -207,6 +212,70 @@ console.log(value)
 
 }
 
+
+
+async function tabsQuery(){
+
+
+  let tabs = await chrome.tabs.query({}).then(
+    result =>  result
+     )
+return tabs
+
+
+
+}
+
+
+
+
+
+
+
+async function muteTabs(lectureID){
+
+
+ 
+tabsInfo = await tabsQuery()
+
+for(let i=0; i <tabsInfo.length; i++){
+
+if(tabsInfo[i].id!=lectureID && tabsInfo[i].audible  == true){
+
+  toggleMuteState(tabsInfo[i].id)
+
+
+}
+
+
+}
+
+
+}
+
+
+async function unMuteTabs(lectureID){
+
+  tabsInfo = await tabsQuery()
+
+  for(let i=0; i <tabsInfo.length; i++){
+
+
+
+
+
+  if(tabsInfo[i].id!=lectureID && tabsInfo[i].audible  == true){
+
+    unToggleMuteState(tabsInfo[i].id)
+  
+  
+  }
+  
+  
+  }
+
+
+}
 
 
 getID("")
