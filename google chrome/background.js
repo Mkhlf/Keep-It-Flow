@@ -235,7 +235,6 @@ tabsInfo = await tabsQuery()
 for(let i=0; i <tabsInfo.length; i++){
 
 if(tabsInfo[i].id!=lectureID && tabsInfo[i].audible  == true){
-
   toggleMuteState(tabsInfo[i].id)
 
 
