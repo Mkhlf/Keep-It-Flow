@@ -1,4 +1,3 @@
-let newtabButton = document.querySelector("button")
 let numberOfTabs = document.querySelector("#tabsAvaliable")
 
 
@@ -7,19 +6,6 @@ let optionsTabs = document.querySelector(".select")
 
 let choicePicked = document.querySelector("#picked")
 console.log("test")
-
-
-
-//Event to check if button clicked then go to my twitter.
-newtabButton.addEventListener('click',function(){
-
-
-
-
-
-    chrome.tabs.create({url:"https://twitter.com/NotBukha"})
-
-})
 
 
 //To check which tab did the user picked:
