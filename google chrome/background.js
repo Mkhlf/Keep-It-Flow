@@ -115,8 +115,14 @@ chrome.storage.onChanged.addListener(
   (function(changes){
 
    console.log(changes)
-      var newTitle= changes['choice']['newValue']
+      let newTitle= changes['choice']['newValue']
+      let oldTitle= changes['choice']['oldValue']
       
+      if(newTitle!= oldTitle){
+
+        unMuteTabs()
+
+      }
 
 
        
@@ -197,9 +203,9 @@ if(tabsInfo[i].id == lectureID && tabsInfo[i].audible==true)
   muteTabs(lectureID)
 
 }
-else{
+else if(tabsInfo[i].id == lectureID && tabsInfo[i].audible==false){
   console.log("is bruh ")
- // unMuteTabs(lectureID)
+ unMuteTabs(lectureID)
 }
 
 }
@@ -254,22 +260,17 @@ if(tabsInfo[i].id!=lectureID && tabsInfo[i].audible  == true){
 }
 
 
-async function unMuteTabs(lectureID){
+async function unMuteTabs(){
 
   tabsInfo = await tabsQuery()
 
   for(let i=0; i <tabsInfo.length; i++){
 
-
-
-
-
-  if(tabsInfo[i].id!=lectureID && tabsInfo[i].audible  == true){
+ 
 
     unToggleMuteState(tabsInfo[i].id)
   
-  
-  }
+
   
   
   }
