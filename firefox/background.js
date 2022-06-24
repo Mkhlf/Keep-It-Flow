@@ -1,24 +1,19 @@
-let mainTab = null;
+let mainTab = null; //mainTab Id
 
 // get the current tabs and mute them if the maintab is active, and if not unmute them 
 async function querybrowser() {
-  tab = await getTab(mainTab);
-  if (tab) {
-    tab = tab.title;
-  }
-  console.log("here inside", tab);
-
+  console.log("hehehehehheheheheh")
   browser.tabs.query({})
     .then(async (tabs) => {
       let mainTabState = await getTab(mainTab);
       if (mainTabState === null) return;
       mainTabState = mainTabState.audible;
-      console.log(mainTabState);
       for (let tab of tabs) {
         if (tab.id !== mainTab && mainTabState) {
           toggleMute(tab.id, true);
         } else {
-          toggleMute(tab.id, false);
+          if (tab.muted || tab.MutedInfoReason !== 'user')
+            toggleMute(tab.id, false);
         }
       }
     });
@@ -45,17 +40,10 @@ browser.storage.local.set({ choice: null });
 // when the user select a new tab, chage it to the current tab
 browser.storage.onChanged.addListener(async function (changes) {
 
-  console.log(changes['choice']);
-  var newTitle = changes['choice']['newValue'];
-  var oldTitle = changes['choice']['oldValue'];
-  console.log(`New title is : ${newTitle}`);
-  console.log(`Old title is : ${oldTitle}`);
+  let newTitle = changes['choice']['newValue'];
+  let oldTitle = changes['choice']['oldValue'];
   if (newTitle !== oldTitle) {
-    if (mainTab !== null) {
-      return;
-    }
     mainTab = parseInt(newTitle);
-    console.log('mainTap is :', mainTab);
     toggleMute(mainTab, false);
     await querybrowser();
   }
@@ -64,6 +52,10 @@ browser.storage.onChanged.addListener(async function (changes) {
 
 // calling if a new tab is created, add it and mute it if needed.
 browser.tabs.onCreated.addListener(async function () {
+  mainTab = await browser.storage.local.get('choice');
+  mainTab = mainTab['choice'];
+  if (mainTab === null) return;
+  mainTab = parseInt(mainTab);
   await querybrowser();
 });
 // @TODO: 
@@ -77,7 +69,6 @@ browser.tabs.onUpdated.addListener(async function (tabid) {
   mainTab = mainTab['choice'];
   if (mainTab === null) return;
   mainTab = parseInt(mainTab);
-  console.log('updated', tabid, mainTab);
   await querybrowser();
 }, {
   properties: ["audible"]

@@ -1,36 +1,24 @@
 
-
-
 function queryChrome(){
 
     chrome.tabs.query(
         {},
             function(tabs){
               console.log(tabs)
-
-            for(let i = 0; i<tabs.length;i++){
-             
+            for(let i = 0; i<tabs.length;i++){ 
                   console.log(i.toString()+": "+tabs[i].url)
                   console.log("Is audible : "+tabs[i].audible)
                   console.log("Tab id  : "+tabs[i].id)
-                 
                    // toggleMuteState(tabs[4].id)
-                  
-                  
-                  
             }
             tabsReturner(tabs)
-
             }
-
-
-
       )
 
 }
 
 
-
+// This has to be changed cuz alot of talk u can make it smaller.
 function toggleMuteState(tabId) {
   chrome.tabs.get(tabId, async (tab) => {
     let muted = true;
@@ -110,7 +98,7 @@ chrome.storage.local.set({choice: " "}, function() {
 
 
 
-
+//add properites i gues this is the spelling forgor.
 chrome.storage.onChanged.addListener(
   (function(changes){
 

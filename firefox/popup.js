@@ -14,14 +14,10 @@ async function getTab(tabId) {
 
 optionsTabs.addEventListener('change', async (event) => {
   let newOptionId = event.target;
-  console.log(newOptionId.value);
   mainTab = newOptionId.value;
   let myTab = await getTab(mainTab);
   choicePicked.innerText = myTab.title;
-
-  browser.storage.local.set({ choice: mainTab, choiceTitle: myTab.title }, function () {
-    console.log('Picked Tab is :', choicePicked.innerText);
-  });
+  browser.storage.local.set({ choice: mainTab, choiceTitle: myTab.title });
 })
 
 // helper function that takes a tab and addit to current lablist
