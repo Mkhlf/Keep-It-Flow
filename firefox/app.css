@@ -137,15 +137,16 @@ body {
     max-height: 375px;
     min-width: 250px;
     max-width: 375px;
-	/* justify-content: center; */
-	align-items: center;
-	padding: 10px;
+    /* justify-content: center; */
+    align-items: center;
+    padding: 10px;
 }
 
-h1{
-	font-size: 2em;
-	padding-top: 10px;
-	padding-bottom: 30px;
+h1 {
+    color: #fefcf0;
+    font-size: 2em;
+    padding-top: 10px;
+    padding-bottom: 30px;
 }
 /* <select> styles */
 select {
@@ -165,10 +166,14 @@ select {
             rgba(255, 255, 255, 0.3) 3em,
             rgba(255, 255, 255, 0.2) 3em
         );
-    color: white;
+    color: #fefcf0;
     border-radius: 0.25em;
     box-shadow: 0 0 1em 0 rgba(0, 0, 0, 0.2);
     cursor: pointer;
+}
+label{
+	color: #fefcf0;
+	padding: 5px;
 }
 select option {
     color: inherit;
