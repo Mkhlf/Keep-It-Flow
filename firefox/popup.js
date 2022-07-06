@@ -16,11 +16,10 @@ optionsTabs.addEventListener('change', async (event) => {
   let newOptionId = event.target;
   mainTab = newOptionId.value;
   let myTab = await getTab(mainTab);
-  choicePicked.innerText = myTab.title;
   browser.storage.local.set({ choice: mainTab, choiceTitle: myTab.title });
 })
 
-// helper function that takes a tab and addit to current lablist
+// helper function that takes a tab and add it to current tab list
 async function addNewOption(tab) {
 
   mainTab = await browser.storage.local.get('choice');
@@ -40,9 +39,7 @@ async function addNewOption(tab) {
 
 //check the current tabs and add them to the dropdown menu
 async function queryTabs() {
-  let mainTabTitle = await browser.storage.local.get('choiceTitle');
-  if (mainTabTitle !== null)
-    choicePicked.innerText = mainTabTitle['choiceTitle']; // show the last selection
+ 
   if (optionsTabs.innerHTML !== '')
     optionsTabs.innerHTML = ''; // reset the dropdown menue
   browser.tabs.query({})
