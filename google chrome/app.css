@@ -132,20 +132,22 @@ body {
     background: linear-gradient(35deg, red, purple);
     font-family: 'Open Sans', sans-serif;
     box-sizing: border-box;
-    display: flex;
     min-height: 250px;
     max-height: 375px;
     min-width: 250px;
     max-width: 375px;
     /* justify-content: center; */
-    align-items: center;
+
     padding: 10px;
 }
 
 h1 {
+    color: #fefcf0;
     font-size: 2em;
     padding-top: 10px;
+    text-align: center;
     padding-bottom: 30px;
+  
 }
 /* <select> styles */
 select {
@@ -170,9 +172,12 @@ select {
     box-shadow: 0 0 1em 0 rgba(0, 0, 0, 0.2);
     cursor: pointer;
 }
-label {
-    color: #fefcf0;
-    padding: 5px;
+label{
+    display: block;
+	color: #fefcf0;
+	padding: 5px;
+    text-align: center;
+    
 }
 select option {
     color: inherit;

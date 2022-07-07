@@ -1,18 +1,17 @@
 let numberOfTabs = document.querySelector("#tabsAvaliable")
 
 
-let optionsTabs = document.querySelector(".select")
+let optionsTabs = document.querySelector("#select")
 
 
-let choicePicked = document.querySelector("#picked")
-console.log("test")
+
 
 
 //To check which tab did the user picked:
 optionsTabs.addEventListener('change',(event)=>{
 
 console.log(`User picked: ${event.target.value}`)
-choicePicked.innerText=event.target.value
+
 
 chrome.storage.local.set({choice:event.target.value}, function() {
   console.log('Value of choice :',event.target.value);
