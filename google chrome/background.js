@@ -1,283 +1,76 @@
+let mainTab = null; //mainTab Id
 
+// get the current tabs and mute them if the maintab is active, and if not unmute them 
+async function querychrome() {
+	chrome.tabs.query({})
+		.then(async (tabs) => {
+			let mainTabState = await getTab(mainTab);
+			if (mainTabState === null) return;
+			mainTabState = mainTabState.audible;
+			for (let tab of tabs) {
+				if (tab.id !== mainTab && mainTabState) {
+					toggleMute(tab.id, true);
+				} else {
+					if (tab.muted || tab.MutedInfoReason !== 'user')
+						toggleMute(tab.id, false);
+				}
+			}
+		});
+}
 
-
-function queryChrome(){
-
-  chrome.tabs.query(
-      {},
-          function(tabs){
-          
-
-          for(let i = 0; i<tabs.length;i++){
-           
-           
-               
-                 // toggleMuteState(tabs[4].id)
-                
-                
-                
-          }
-          tabsReturner(tabs)
-
-          }
-
-
-
-    )
-
+// get the tab from the tab id
+async function getTab(tabId) {
+	if (tabId === null) return null;
+	if (typeof (tabId) !== `string` && typeof (tabId) !== `number`) { console.log(typeof (tabId)); return null; }
+	let tab = await chrome.tabs.get(parseInt(tabId));
+	return tab;
 }
 
 
-
-function toggleMuteState(tabId) {
-chrome.tabs.get(tabId, async (tab) => {
-  let muted = true;
-  
-  await chrome.tabs.update(tabId, { muted });
-
-});
+// take the tab to be toggled, and its newstate
+async function toggleMute(tabId, state = true) {
+	let currTab = await getTab(tabId);
+	if (currTab === null || currTab.muted === state) return;
+	await chrome.tabs.update(tabId, { muted: state });
 }
 
+// Set the initial empty tab
+chrome.storage.local.set({ choice: null });
 
-function unToggleMuteState(tabId) {
-chrome.tabs.get(tabId, async (tab) => {
-  let muted = false;
+// when the user select a new tab, chage it to the current tab
+chrome.storage.onChanged.addListener(async function (changes) {
 
-  await chrome.tabs.update(tabId, { muted });
-  
-
-});
-}
-
-
-
-
-
-
-
-
-
-function tabsReturner(listOfTabs){
-
-chrome.storage.local.set({tabsReturned: listOfTabs}, function() {
-
+	let newTitle = changes['choice']['newValue'];
+	let oldTitle = changes['choice']['oldValue'];
+	if (newTitle !== oldTitle) {
+		mainTab = parseInt(newTitle);
+		toggleMute(mainTab, false);
+		await querychrome();
+	}
 });
 
 
-}
-
-
-
-chrome.tabs.onCreated.addListener(
-function(){
-queryChrome()
-keepItFlow()
-console.log("created")
-
-
-}
-)
-
-chrome.tabs.onRemoved.addListener(
-function(){
-queryChrome()
-keepItFlow()
-
-}
-)
-
-
-chrome.tabs.onMoved.addListener(
-function(){
-queryChrome()
-keepItFlow()
-
-}
-)
-
-chrome.tabs.onUpdated.addListener(
-function(){
-  queryChrome()
-  keepItFlow()
-  console.log("muted")
-}
-)
-
-
-chrome.storage.local.set({choice: " "}, function() {
-
+// calling if a new tab is created, add it and mute it if needed.
+chrome.tabs.onCreated.addListener(async function () {
+	mainTab = await chrome.storage.local.get('choice');
+	mainTab = mainTab['choice'];
+	if (mainTab === null) return;
+	mainTab = parseInt(mainTab);
+	await querychrome();
+});
+// @TODO: 
+chrome.tabs.onRemoved.addListener(function () {
+	// check if the deleted tab is the mainTab
 });
 
-
-
-
-
-chrome.storage.onChanged.addListener(
-(function(changes){
-
-
-    let newTitle= changes['choice']['newValue']
-    let oldTitle= changes['choice']['oldValue']
-    
-    if(newTitle!= oldTitle){
-
-      unMuteTabs()
-
-    }
-
-
-     
-      getID(newTitle);
-
-    
-     
-
-
- 
-
-
-
- 
-
-})
-)
-
-
-
-
-
-async function getID(title){
-
-
-
-tabsInfo  = await tabsQuery()
-
-for (let i=0; i<tabsInfo.length; i++){
-
-if (tabsInfo[i].title== title){
-
-  chrome.storage.local.set({titleID: tabsInfo[i].id}, function() {
-
-  });
-
-}
-
-
-}
-keepItFlow()
-
-
-
-
-
-
-
-
-}
-
-
-
-
-
-
-
-async function  keepItFlow(){
-
-let lectureID;
-lectureID = await chrome.storage.local.get(['titleID']).then(
-
-result => result.titleID
-
-)
-
-
-
-
-let tabsInfo = await tabsQuery()
-
-for(let i =0; i<tabsInfo.length; i++){
-
-
-if(tabsInfo[i].id == lectureID && tabsInfo[i].audible==true)
-{
-
-muteTabs(lectureID)
-
-}
-else if(tabsInfo[i].id == lectureID && tabsInfo[i].audible==false){
-
-unMuteTabs(lectureID)
-}
-
-}
-
-
-
-
-
-
-
-}
-
-
-
-async function tabsQuery(){
-
-
-let tabs = await chrome.tabs.query({}).then(
-  result =>  result
-   )
-return tabs
-
-
-
-}
-
-
-
-
-
-
-
-async function muteTabs(lectureID){
-
-
-
-tabsInfo = await tabsQuery()
-
-for(let i=0; i <tabsInfo.length; i++){
- 
-if(tabsInfo[i].id!=lectureID && tabsInfo[i].audible  == true){
-
-toggleMuteState(tabsInfo[i].id)
-
-
-}
-
-
-}
-
-
-}
-
-
-async function unMuteTabs(){
-
-tabsInfo = await tabsQuery()
-
-for(let i=0; i <tabsInfo.length; i++){
-
-
-  unToggleMuteState(tabsInfo[i].id)
-
-
-
-
-}
-
-
-}
-
-
-getID("")
-queryChrome()
+// only check if the maintab were chenged
+chrome.tabs.onUpdated.addListener(async function (tabid) {
+	mainTab = await chrome.storage.local.get('choice');
+	mainTab = mainTab['choice'];
+	if (mainTab === null) return;
+	mainTab = parseInt(mainTab);
+	await querychrome();
+});
+
+// calling the main functions
+querychrome();

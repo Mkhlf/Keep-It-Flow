@@ -1,95 +1,67 @@
-let numberOfTabs = document.querySelector("#tabsAvaliable")
+const optionsTabs = document.getElementById("select")
+const choicePicked = document.querySelector("#picked")
+let mainTab = null;
+queryTabs();
 
+// get the tab from the current tab id
+async function getTab(tabId) {
+  if (tabId === null) return null;
+  let tab = await chrome.tabs.get(parseInt(tabId));
+  return tab;
+}
 
-let optionsTabs = document.querySelector("#select")
+//To check which tab did the user picked
 
-
-
-
-
-//To check which tab did the user picked:
-optionsTabs.addEventListener('change',(event)=>{
-
-console.log(`User picked: ${event.target.value}`)
-
-
-chrome.storage.local.set({choice:event.target.value}, function() {
-  console.log('Value of choice :',event.target.value);
-});
+optionsTabs.addEventListener('change', async (event) => {
+  let newOptionId = event.target;
+  mainTab = newOptionId.value;
+  let myTab = await getTab(mainTab);
+  chrome.storage.local.set({ choice: mainTab, choiceTitle: myTab.title });
 })
 
+// helper function that takes a tab and add it to current tab list
+async function addNewOption(tab) {
 
+  mainTab = await chrome.storage.local.get('choice');
+  mainTab = mainTab['choice'];
+  if (mainTab !== null)
+    mainTab = parseInt(mainTab);
 
-
-
-
-
-  function queryChrome(){
-    console.log("test")
-    chrome.storage.local.get(['tabsReturned'], function(result) {
-        console.log('Value currently is ' + result.key);
-
-        showOptionsToUser(result.tabsReturned)
-
-      });
-      
-
-}
-
-
-
-
-
-function showOptionsToUser(options){
-  optionsTabs.innerHTML=''
-
-
-
-
-
-
-  for(let i=0; i< options.length;i++){
-
-var option = document.createElement('option');
-option.value = options[i].title
-option.text = options[i].title
-
-optionsTabs.appendChild(option)
-
+  let newOption = document.createElement('option');
+  newOption.value = tab.id;
+  newOption.text = tab.title;
+  if (mainTab !== null && mainTab === tab.id) {
+    newOption.selected = true;
   }
-
+  optionsTabs.appendChild(newOption);
 
 }
 
+//check the current tabs and add them to the dropdown menu
+async function queryTabs() {
+ 
+  if (optionsTabs.innerHTML !== '')
+    optionsTabs.innerHTML = ''; // reset the dropdown menue
+  chrome.tabs.query({})
+    .then((tabs) => {
+      for (let tab of tabs) { // loop over all the tabs
+        addNewOption(tab);
+      }
+    });
+}
 
+//update the current tablist if a tab was added, removed, or changed by any mean.
+chrome.tabs.onRemoved.addListener(
+  () => {
+    queryTabs();
+  });
 chrome.tabs.onCreated.addListener(
-  function(){
-   queryChrome()
-   console.log("Done 2!!!")
- 
- }
- )
-
-
- chrome.tabs.onRemoved.addListener(
-   function(){
-   queryChrome()
-   console.log("Done 2!!!")
- 
- }
-)
-
-
+  () => {
+    queryTabs()
+  });
 chrome.tabs.onUpdated.addListener(
-  function(){
-    queryChrome()
-   
-  
-  }
-)
+  () => {
+    queryTabs()
+  });
 
-
-
- queryChrome()
-
-
+//get all the tabs
