@@ -14,9 +14,9 @@
   },
   "description": "This extension will help you focus while managing the sounds in the background.",
   "icons":{
-	"128":"icons/icon128.png",
-	"48" : "icons/icon48.png",
-	 "16" : "icons/icon16.png"
+	"128":"icons/Icon128.png",
+	"48" : "icons/Icon48.png",
+	 "16" : "icons/Icon16.png"
    },
   "manifest_version": 2,
   "name": "Keep it flow",
