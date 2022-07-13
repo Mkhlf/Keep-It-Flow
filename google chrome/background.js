@@ -20,10 +20,13 @@ async function querychrome() {
 
 // get the tab from the tab id
 async function getTab(tabId) {
-	if (tabId === null) return null;
-	if (typeof (tabId) !== `string` && typeof (tabId) !== `number`) { console.log(typeof (tabId)); return null; }
-	let tab = await chrome.tabs.get(parseInt(tabId));
-	return tab;
+	if (tabId !== null && (typeof (tabId) === "string" || typeof (tabId) === "number")) {
+		if (isNaN(tabId)) 
+			return null;
+		let tab = await chrome.tabs.get(parseInt(tabId));
+		return tab;
+	}
+	return null;
 }
 
 
@@ -39,7 +42,6 @@ chrome.storage.local.set({ choice: null });
 
 // when the user select a new tab, chage it to the current tab
 chrome.storage.onChanged.addListener(async function (changes) {
-
 	let newTitle = changes['choice']['newValue'];
 	let oldTitle = changes['choice']['oldValue'];
 	if (newTitle !== oldTitle) {

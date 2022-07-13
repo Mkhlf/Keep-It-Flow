@@ -20,7 +20,7 @@ async function querybrowser() {
 
 // get the tab from the tab id
 async function getTab(tabId) {
-	if (tabId === null) return null;
+	if (tabId === null || isNaN(tabId)) return null;
 	if (typeof (tabId) !== `string` && typeof (tabId) !== `number`) { console.log(typeof (tabId)); return null; }
 	let tab = await browser.tabs.get(parseInt(tabId));
 	return tab;
