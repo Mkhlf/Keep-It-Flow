@@ -33,18 +33,18 @@ async function addNewOption(tab) {
 	if (mainTab !== null && mainTab === tab.id) {
 		newOption.selected = true;
 	}
+
 	optionsTabs.appendChild(newOption);
 
 }
 
 //check the current tabs and add them to the dropdown menu
 async function queryTabs() {
-	
 	optionsTabs.innerHTML = ''; // reset the dropdown menue
-	browser.tabs.query({})
-		.then((tabs) => {
+	await browser.tabs.query({})
+		.then(async (tabs) => {
 			for (let tab of tabs) { // loop over all the tabs
-				addNewOption(tab);
+				await addNewOption(tab);
 			}
 		});
 }
@@ -58,9 +58,4 @@ browser.tabs.onCreated.addListener(
 	() => {
 		queryTabs()
 	});
-browser.tabs.onUpdated.addListener(
-	() => {
-		queryTabs()
-	});
-
 //get all the tabs
