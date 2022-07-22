@@ -41,7 +41,7 @@ async function addNewOption(tab) {
 async function queryTabs() {
 	optionsTabs.innerHTML = ''; // reset the dropdown menue
 	chrome.tabs.query({})
-		.then((tabs) => {
+		.then(async (tabs) => {
 			for (let tab of tabs) { // loop over all the tabs
 				addNewOption(tab);
 			}
@@ -57,9 +57,4 @@ chrome.tabs.onCreated.addListener(
 	() => {
 		queryTabs()
 	});
-chrome.tabs.onUpdated.addListener(
-	() => {
-		queryTabs()
-	});
-
 //get all the tabs
