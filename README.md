@@ -10,4 +10,5 @@ With this extension, you will be able to enjoy your work while staying productiv
 
 
 [Firefox](https://addons.mozilla.org/en-US/firefox/addon/keep-it-flow/)
+
 [Chrome](https://chrome.google.com/webstore/detail/keep-it-flow/jdmjoifadccaofklghfbnabeclbnainl?hl=en)
