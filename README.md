@@ -7,3 +7,7 @@ Keep it flow increases your productivity by limiting the time you waste on toggl
 The way the extension works is that you pick the tab that you want to focus on. Then whenever that tab is actively playing sound, the extension will mute all other tabs, which means the process of dealing with pausing, re/playing, and juggling between tabs is automated. 
 
 With this extension, you will be able to enjoy your work while staying productive 😼.
+
+
+[Firefox](https://addons.mozilla.org/en-US/firefox/addon/keep-it-flow/)
+[Chrome](https://chrome.google.com/webstore/detail/keep-it-flow/jdmjoifadccaofklghfbnabeclbnainl?hl=en)
