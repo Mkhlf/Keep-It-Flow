@@ -3,6 +3,35 @@ const choicePicked = document.querySelector("#picked")
 var checkbox = document.querySelector("#myCheck")
 let mainTab = null;
 
+let cssBefore =  `background: linear-gradient(35deg, red, purple);
+font-family: 'Open Sans', sans-serif;
+box-sizing: border-box;
+min-height: 320px;
+max-height: 400px;
+min-width: 350px;
+max-width: 475px;
+-webkit-transition: background-color 1000ms linear;
+-ms-transition: background-color 1000ms linear;
+transition: background-color 1000ms linear;
+
+padding: 10px;`
+
+
+let cssAfter = `background: linear-gradient(180deg, rgba(75,73,105,1) 0%, rgba(0,0,0,1) 100%);
+font-family: 'Open Sans', sans-serif;
+box-sizing: border-box;
+min-height: 320px;
+max-height: 400px;
+min-width: 350px;
+max-width: 475px;
+-webkit-transition: background-color 1000ms linear;
+-ms-transition: background-color 1000ms linear;
+transition: background-color 1000ms linear;
+transition-delay: 1s;
+padding: 10px;`
+
+
+
 
 queryTabs();
 
@@ -84,14 +113,14 @@ chrome.tabs.onCreated.addListener(
 
 //Check if user wish to turn off the extension
 checkbox.addEventListener('change', function() {
-
 	//If checkbox is on 
 	if (checkbox.checked == true) {
 		chrome.storage.local.set({ status:"Off" });
-	
+		document.body.style.cssText = cssAfter;
 		console.log("off popjs")
 	} else {
 		chrome.storage.local.set({ status:"On" });
+		document.body.style.cssText = cssBefore;
 		console.log("on popjs")
 	}
   });
