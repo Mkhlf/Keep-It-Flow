@@ -116,11 +116,11 @@ checkbox.addEventListener('change', function() {
 	//If checkbox is on 
 	if (checkbox.checked == true) {
 		chrome.storage.local.set({ status:"Off" });
-		document.body.style.cssText = cssAfter;
+		document.body.classList = "bodyOff";
 		console.log("off popjs")
 	} else {
 		chrome.storage.local.set({ status:"On" });
-		document.body.style.cssText = cssBefore;
+		document.body.classList = "bodyOn";
 		console.log("on popjs")
 	}
   });
