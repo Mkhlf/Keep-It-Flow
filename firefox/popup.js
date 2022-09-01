@@ -1,5 +1,6 @@
 const optionsTabs = document.getElementById("select")
 const choicePicked = document.querySelector("#picked")
+var checkbox = document.querySelector("#myCheck")
 let mainTab = null;
 queryTabs();
 
@@ -16,6 +17,8 @@ optionsTabs.addEventListener('change', async (event) => {
 	let newOptionId = event.target;
 	mainTab = newOptionId.value;
 	let myTab = await getTab(mainTab);
+	checkbox.checked = false;
+	browser.storage.local.set({ status:"On" });
 	browser.storage.local.set({ choice: mainTab, choiceTitle: myTab.title });
 })
 
@@ -40,9 +43,31 @@ async function addNewOption(tab) {
 
 //check the current tabs and add them to the dropdown menu
 async function queryTabs() {
+	let muteButton = await browser.storage.local.get('status');
+	muteButton = muteButton['status'];
+	if(muteButton=='Off'){
+		checkbox.checked = true;
+	}else{
+		browser.storage.local.set({ status:"On" });
+		checkbox.checked = false;
+		
+	}
+
+
+
+
+
 	optionsTabs.innerHTML = ''; // reset the dropdown menue
 	await browser.tabs.query({})
 		.then(async (tabs) => {
+					//Adding a null value at the begining so the user could pick the tab even if it was the first tab.
+					let newOption = document.createElement('option');
+					newOption.value = "-Pick a tab-"
+					newOption.text ="Select a tab:"
+	
+	
+					optionsTabs.appendChild(newOption);
+
 			for (let tab of tabs) { // loop over all the tabs
 				await addNewOption(tab);
 			}
@@ -59,3 +84,15 @@ browser.tabs.onCreated.addListener(
 		queryTabs()
 	});
 //get all the tabs
+checkbox.addEventListener('change', function() {
+	//If checkbox is on 
+	if (checkbox.checked == true) {
+		browser.storage.local.set({ status:"Off" });
+		document.body.classList = "bodyOff";
+		console.log("off popjs")
+	} else {
+		browser.storage.local.set({ status:"On" });
+		document.body.classList = "bodyOn";
+		console.log("on popjs")
+	}
+  });

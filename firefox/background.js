@@ -4,17 +4,26 @@ let mainTab = null; //mainTab Id
 async function querybrowser() {
 	browser.tabs.query({})
 		.then(async (tabs) => {
+			let muteButton = await browser.storage.local.get('status');
+			muteButton = muteButton['status'];
 			let mainTabState = await getTab(mainTab);
 			if (mainTabState === null) return;
 			mainTabState = mainTabState.audible;
-			for (let tab of tabs) {
-				if (tab.id !== mainTab && mainTabState) {
-					toggleMute(tab.id, true);
-				} else {
-					if (tab.muted || tab.MutedInfoReason !== 'user')
-						toggleMute(tab.id, false);
-				}
+
+			if(muteButton == 'On'){	for (let tab of tabs) {
+			if (tab.id !== mainTab && mainTabState && muteButton == "On") {
+				toggleMute(tab.id, true);
+			} else {
+				if (tab.muted || tab.MutedInfoReason !== 'user')
+					toggleMute(tab.id, false);
 			}
+		}}
+		else if (muteButton == 'Off'){
+			for(let tab of tabs){
+				toggleMute(tab.id, false);
+			}
+
+		}
 		});
 }
 
@@ -40,13 +49,25 @@ browser.storage.local.set({ choice: null });
 // when the user select a new tab, chage it to the current tab
 browser.storage.onChanged.addListener(async function (changes) {
 
-	let newTitle = changes['choice']['newValue'];
-	let oldTitle = changes['choice']['oldValue'];
-	if (newTitle !== oldTitle) {
-		mainTab = parseInt(newTitle);
-		toggleMute(mainTab, false);
-		await querybrowser();
+	let muteButton = await browser.storage.local.get('status');
+	muteButton = muteButton['status'];
+
+	if(changes['choice']){
+		let newTitle = changes['choice']['newValue'];
+		let oldTitle = changes['choice']['oldValue'];
+		if (newTitle !== oldTitle) {
+			mainTab = parseInt(newTitle);
+			toggleMute(mainTab, false);
+			await querybrowser();
+		}
 	}
+	else if (changes['status']){ 
+		await querybrowser();
+		
+
+	}
+
+	
 });
 
 
