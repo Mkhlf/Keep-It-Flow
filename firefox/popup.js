@@ -2,6 +2,7 @@ const optionsTabs = document.getElementById("select")
 const choicePicked = document.querySelector("#picked")
 var checkbox = document.querySelector("#myCheck")
 let mainTab = null;
+startUp();
 queryTabs();
 
 // get the tab from the current tab id
@@ -43,19 +44,6 @@ async function addNewOption(tab) {
 
 //check the current tabs and add them to the dropdown menu
 async function queryTabs() {
-	let muteButton = await browser.storage.local.get('status');
-	muteButton = muteButton['status'];
-	if(muteButton=='Off'){
-		checkbox.checked = true;
-	}else{
-		browser.storage.local.set({ status:"On" });
-		checkbox.checked = false;
-		
-	}
-
-
-
-
 
 	optionsTabs.innerHTML = ''; // reset the dropdown menue
 	await browser.tabs.query({})
@@ -87,12 +75,43 @@ browser.tabs.onCreated.addListener(
 checkbox.addEventListener('change', function() {
 	//If checkbox is on 
 	if (checkbox.checked == true) {
-		browser.storage.local.set({ status:"Off" });
-		document.body.classList = "bodyOff";
-		console.log("off popjs")
+		buttonOffPro();
 	} else {
-		browser.storage.local.set({ status:"On" });
-		document.body.classList = "bodyOn";
-		console.log("on popjs")
+		buttonOnPro();
 	}
   });
+  async function startUp(){
+	let muteButton = await browser.storage.local.get('status');
+	muteButton = muteButton['status'];
+
+	if(muteButton=="On"){
+		document.body.classList = "bodyOnNot";
+
+	}
+	else{
+		document.body.classList = "bodyOffNot";
+	}
+
+	if(muteButton=='Off'){
+		checkbox.checked = true;
+		
+	}else{
+	
+		checkbox.checked = false;
+		
+	}
+
+}  
+
+function buttonOnPro(){
+	browser.storage.local.set({ status:"On" });
+	document.body.classList = "bodyOn";
+	
+}
+
+
+function buttonOffPro(){
+	browser.storage.local.set({ status:"Off" });
+	document.body.classList = "bodyOff";
+	
+}

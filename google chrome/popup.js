@@ -32,7 +32,7 @@ padding: 10px;`
 
 
 
-
+startUp();
 queryTabs();
 
 // get the tab from the current tab id
@@ -49,7 +49,7 @@ optionsTabs.addEventListener('change', async (event) => {
 	mainTab = newOptionId.value;
 	let myTab = await getTab(mainTab);
 	checkbox.checked = false;
-	chrome.storage.local.set({ status:"On" });
+	buttonOnPro();
 	chrome.storage.local.set({ choice: mainTab, choiceTitle: myTab.title });
 })
 
@@ -73,15 +73,6 @@ async function addNewOption(tab) {
 
 //check the current tabs and add them to the dropdown menu
 async function queryTabs() {
-	let muteButton = await chrome.storage.local.get('status');
-	muteButton = muteButton['status'];
-	if(muteButton=='Off'){
-		checkbox.checked = true;
-	}else{
-		chrome.storage.local.set({ status:"On" });
-		checkbox.checked = false;
-		
-	}
 	optionsTabs.innerHTML = ''; // reset the dropdown menue
 		chrome.tabs.query({})
 			.then(async (tabs) => {
@@ -115,12 +106,47 @@ chrome.tabs.onCreated.addListener(
 checkbox.addEventListener('change', function() {
 	//If checkbox is on 
 	if (checkbox.checked == true) {
-		chrome.storage.local.set({ status:"Off" });
-		document.body.classList = "bodyOff";
-		console.log("off popjs")
+		buttonOffPro();
+		
 	} else {
-		chrome.storage.local.set({ status:"On" });
-		document.body.classList = "bodyOn";
-		console.log("on popjs")
+		buttonOnPro();
+		
 	}
   });
+
+
+async function startUp(){
+	let muteButton = await chrome.storage.local.get('status');
+	muteButton = muteButton['status'];
+
+	if(muteButton=="On"){
+		document.body.classList = "bodyOnNot";
+
+	}
+	else{
+		document.body.classList = "bodyOffNot";
+	}
+
+	if(muteButton=='Off'){
+		checkbox.checked = true;
+		
+	}else{
+	
+		checkbox.checked = false;
+		
+	}
+
+}  
+
+function buttonOnPro(){
+	chrome.storage.local.set({ status:"On" });
+	document.body.classList = "bodyOn";
+	
+}
+
+
+function buttonOffPro(){
+	chrome.storage.local.set({ status:"Off" });
+	document.body.classList = "bodyOff";
+	
+}
