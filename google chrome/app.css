@@ -129,7 +129,7 @@ table {
 }
 
 body {
-    background: linear-gradient(35deg, red, purple);
+    /*background: linear-gradient(35deg, red, purple);*/
     font-family: 'Open Sans', sans-serif;
     box-sizing: border-box;
     min-height: 320px;
@@ -140,6 +140,7 @@ body {
 
     padding: 10px;
 }
+
 
 h1 {
     color: #fefcf0;
@@ -368,4 +369,34 @@ select::-ms-expand {
     background-color: #fcebeb;
   }
   
+
+
+
+.bodyOn{
+  
+  background:  #ff0066;
+
+  transition: all 0.5s ease-in;
+  
+}
+
+.bodyOff{
+  
+  background: black;
+  transition: all 0.5s ease-in;
+}
+
+
+.bodyOnNot{
+  
+  background:  #ff0066;
+
  
+  
+}
+
+.bodyOffNot{
+  
+  background: black;
+
+}

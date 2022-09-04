@@ -3,7 +3,36 @@ const choicePicked = document.querySelector("#picked")
 var checkbox = document.querySelector("#myCheck")
 let mainTab = null;
 
+let cssBefore =  `background: linear-gradient(35deg, red, purple);
+font-family: 'Open Sans', sans-serif;
+box-sizing: border-box;
+min-height: 320px;
+max-height: 400px;
+min-width: 350px;
+max-width: 475px;
+-webkit-transition: background-color 1000ms linear;
+-ms-transition: background-color 1000ms linear;
+transition: background-color 1000ms linear;
 
+padding: 10px;`
+
+
+let cssAfter = `background: linear-gradient(180deg, rgba(75,73,105,1) 0%, rgba(0,0,0,1) 100%);
+font-family: 'Open Sans', sans-serif;
+box-sizing: border-box;
+min-height: 320px;
+max-height: 400px;
+min-width: 350px;
+max-width: 475px;
+-webkit-transition: background-color 1000ms linear;
+-ms-transition: background-color 1000ms linear;
+transition: background-color 1000ms linear;
+transition-delay: 1s;
+padding: 10px;`
+
+
+
+startUp();
 queryTabs();
 
 // get the tab from the current tab id
@@ -20,7 +49,7 @@ optionsTabs.addEventListener('change', async (event) => {
 	mainTab = newOptionId.value;
 	let myTab = await getTab(mainTab);
 	checkbox.checked = false;
-	chrome.storage.local.set({ status:"On" });
+	buttonOnPro();
 	chrome.storage.local.set({ choice: mainTab, choiceTitle: myTab.title });
 })
 
@@ -44,15 +73,6 @@ async function addNewOption(tab) {
 
 //check the current tabs and add them to the dropdown menu
 async function queryTabs() {
-	let muteButton = await chrome.storage.local.get('status');
-	muteButton = muteButton['status'];
-	if(muteButton=='Off'){
-		checkbox.checked = true;
-	}else{
-		chrome.storage.local.set({ status:"On" });
-		checkbox.checked = false;
-		
-	}
 	optionsTabs.innerHTML = ''; // reset the dropdown menue
 		chrome.tabs.query({})
 			.then(async (tabs) => {
@@ -84,14 +104,49 @@ chrome.tabs.onCreated.addListener(
 
 //Check if user wish to turn off the extension
 checkbox.addEventListener('change', function() {
-
 	//If checkbox is on 
 	if (checkbox.checked == true) {
-		chrome.storage.local.set({ status:"Off" });
-	
-		console.log("off popjs")
+		buttonOffPro();
+		
 	} else {
-		chrome.storage.local.set({ status:"On" });
-		console.log("on popjs")
+		buttonOnPro();
+		
 	}
   });
+
+
+async function startUp(){
+	let muteButton = await chrome.storage.local.get('status');
+	muteButton = muteButton['status'];
+
+	if(muteButton=="On"){
+		document.body.classList = "bodyOnNot";
+
+	}
+	else{
+		document.body.classList = "bodyOffNot";
+	}
+
+	if(muteButton=='Off'){
+		checkbox.checked = true;
+		
+	}else{
+	
+		checkbox.checked = false;
+		
+	}
+
+}  
+
+function buttonOnPro(){
+	chrome.storage.local.set({ status:"On" });
+	document.body.classList = "bodyOn";
+	
+}
+
+
+function buttonOffPro(){
+	chrome.storage.local.set({ status:"Off" });
+	document.body.classList = "bodyOff";
+	
+}
