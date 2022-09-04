@@ -19,7 +19,7 @@ optionsTabs.addEventListener('change', async (event) => {
 	mainTab = newOptionId.value;
 	let myTab = await getTab(mainTab);
 	checkbox.checked = false;
-	browser.storage.local.set({ status:"On" });
+	buttonOnPro();
 	browser.storage.local.set({ choice: mainTab, choiceTitle: myTab.title });
 })
 
