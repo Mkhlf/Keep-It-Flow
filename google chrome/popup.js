@@ -119,13 +119,15 @@ async function startUp(){
 	let muteButton = await chrome.storage.local.get('status');
 	muteButton = muteButton['status'];
 
-	if(muteButton=="On"){
-		document.body.classList = "bodyOnNot";
+	if(muteButton=="Off"){
+		
+		document.body.classList = "bodyOffNot";
 
 	}
-	else{
-		document.body.classList = "bodyOffNot";
+	else {
+		document.body.classList = "bodyOnNot";
 	}
+
 
 	if(muteButton=='Off'){
 		checkbox.checked = true;

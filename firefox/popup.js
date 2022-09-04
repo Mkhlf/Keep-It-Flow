@@ -84,12 +84,13 @@ checkbox.addEventListener('change', function() {
 	let muteButton = await browser.storage.local.get('status');
 	muteButton = muteButton['status'];
 
-	if(muteButton=="On"){
-		document.body.classList = "bodyOnNot";
+	if(muteButton=="Off"){
+		
+		document.body.classList = "bodyOffNot";
 
 	}
-	else{
-		document.body.classList = "bodyOffNot";
+	else {
+		document.body.classList = "bodyOnNot";
 	}
 
 	if(muteButton=='Off'){
