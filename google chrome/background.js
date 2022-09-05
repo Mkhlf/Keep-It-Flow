@@ -47,13 +47,14 @@ async function toggleMute(tabId, state = true) {
 }
 
 // Set the initial empty tab
+async function getLatTab(){
 try {
 	mainTab = await chrome.storage.local.get('choice');
   }
   catch(err) {
 	chrome.storage.local.set({ choice: null });
   }
-
+}
 
 // when the user select a new tab, chage it to the current tab
 chrome.storage.onChanged.addListener(async function (changes) {
@@ -116,4 +117,5 @@ chrome.tabs.onUpdated.addListener(async function (tabid) {
 });
 
 // calling the main functions
+getLatTab()
 querychrome();
