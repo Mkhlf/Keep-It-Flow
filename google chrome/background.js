@@ -9,28 +9,29 @@ async function querychrome() {
 			let mainTabState = await getTab(mainTab);
 			if (mainTabState === null) return;
 			mainTabState = mainTabState.audible;
-		if(muteButton == 'On'){	for (let tab of tabs) {
-			if (tab.id !== mainTab && mainTabState && muteButton == "On") {
-				toggleMute(tab.id, true);
-			} else {
-				if (tab.muted || tab.MutedInfoReason !== 'user')
+			if (muteButton == 'On') {
+				for (let tab of tabs) {
+					if (tab.id !== mainTab && mainTabState && muteButton == "On") {
+						toggleMute(tab.id, true);
+					} else {
+						if (tab.muted || tab.MutedInfoReason !== 'user')
+							toggleMute(tab.id, false);
+					}
+				}
+			}
+			else if (muteButton == 'Off') {
+				for (let tab of tabs) {
 					toggleMute(tab.id, false);
-			}
-		}}
-		else if (muteButton == 'Off'){
-			for(let tab of tabs){
-				toggleMute(tab.id, false);
-			}
+				}
 
-		}
-		
+			}
 		});
 }
 
 // get the tab from the tab id
 async function getTab(tabId) {
 	if (tabId !== null && (typeof (tabId) === "string" || typeof (tabId) === "number")) {
-		if (isNaN(tabId)) 
+		if (isNaN(tabId))
 			return null;
 		let tab = await chrome.tabs.get(parseInt(tabId));
 		return tab;
@@ -47,52 +48,37 @@ async function toggleMute(tabId, state = true) {
 }
 
 // Set the initial empty tab
-async function getLatTab(){
-try {
-	mainTab = await chrome.storage.local.get('choice');
-  }
-  catch(err) {
-	chrome.storage.local.set({ choice: null });
-  }
+async function getStatus() {
+	try {
+		mainTab = await chrome.storage.local.get('choice');
+	}
+	catch (err) {
+		chrome.storage.local.set({ choice: null });
+	}
 }
 
 // when the user select a new tab, chage it to the current tab
 chrome.storage.onChanged.addListener(async function (changes) {
-
-
 	let muteButton = await chrome.storage.local.get('status');
 	muteButton = muteButton['status'];
-	console.log(muteButton+" background js")
-	
-	if(changes['choice']){
-		
-		
+
+	if (changes['choice']) {
 		let newTitle = changes['choice']['newValue'];
 		let oldTitle = changes['choice']['oldValue'];
-	
-
-	
-
-	
-	if (newTitle !== oldTitle ) {
-		mainTab = parseInt(newTitle);
-		toggleMute(mainTab, false);
+		if (newTitle !== oldTitle) {
+			mainTab = parseInt(newTitle);
+			toggleMute(mainTab, false);
+			await querychrome();
+		}
+	}
+	else if (changes['status']) {
 		await querychrome();
 	}
-
-}
-	else if (changes['status']){ 
-		await querychrome();
-		
-
-	}
-
-
-	
-
-	
 });
 
+// calling the main functions
+getLatTab()
+querychrome();
 
 // calling if a new tab is created, add it and mute it if needed.
 chrome.tabs.onCreated.addListener(async function () {
@@ -116,6 +102,3 @@ chrome.tabs.onUpdated.addListener(async function (tabid) {
 	await querychrome();
 });
 
-// calling the main functions
-getLatTab()
-querychrome();

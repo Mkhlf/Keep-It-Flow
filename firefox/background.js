@@ -9,30 +9,34 @@ async function querybrowser() {
 			let mainTabState = await getTab(mainTab);
 			if (mainTabState === null) return;
 			mainTabState = mainTabState.audible;
-
-			if(muteButton == 'On'){	for (let tab of tabs) {
-			if (tab.id !== mainTab && mainTabState && muteButton == "On") {
-				toggleMute(tab.id, true);
-			} else {
-				if (tab.muted || tab.MutedInfoReason !== 'user')
+			if (muteButton == 'On') {
+				for (let tab of tabs) {
+					if (tab.id !== mainTab && mainTabState && muteButton == "On") {
+						toggleMute(tab.id, true);
+					} else {
+						if (tab.muted || tab.MutedInfoReason !== 'user')
+							toggleMute(tab.id, false);
+					}
+				}
+			}
+			else if (muteButton == 'Off') {
+				for (let tab of tabs) {
 					toggleMute(tab.id, false);
-			}
-		}}
-		else if (muteButton == 'Off'){
-			for(let tab of tabs){
-				toggleMute(tab.id, false);
-			}
+				}
 
-		}
+			}
 		});
 }
 
 // get the tab from the tab id
 async function getTab(tabId) {
-	if (tabId === null || isNaN(tabId)) return null;
-	if (typeof (tabId) !== `string` && typeof (tabId) !== `number`) { console.log(typeof (tabId)); return null; }
-	let tab = await browser.tabs.get(parseInt(tabId));
-	return tab;
+	if (tabId !== null && (typeof (tabId) === "string" || typeof (tabId) === "number")) {
+		if (isNaN(tabId))
+			return null;
+		let tab = await browser.tabs.get(parseInt(tabId));
+		return tab;
+	}
+	return null;
 }
 
 
@@ -44,15 +48,21 @@ async function toggleMute(tabId, state = true) {
 }
 
 // Set the initial empty tab
-browser.storage.local.set({ choice: null });
+async function getStatus() {
+	try {
+		mainTab = await browser.storage.local.get('choice');
+	}
+	catch (err) {
+		browser.storage.local.set({ choice: null });
+	}
+}
 
 // when the user select a new tab, chage it to the current tab
 browser.storage.onChanged.addListener(async function (changes) {
-
 	let muteButton = await browser.storage.local.get('status');
 	muteButton = muteButton['status'];
 
-	if(changes['choice']){
+	if (changes['choice']) {
 		let newTitle = changes['choice']['newValue'];
 		let oldTitle = changes['choice']['oldValue'];
 		if (newTitle !== oldTitle) {
@@ -61,15 +71,14 @@ browser.storage.onChanged.addListener(async function (changes) {
 			await querybrowser();
 		}
 	}
-	else if (changes['status']){ 
+	else if (changes['status']) {
 		await querybrowser();
-		
-
 	}
-
-	
 });
 
+// calling the main functions
+getLatTab()
+querybrowser();
 
 // calling if a new tab is created, add it and mute it if needed.
 browser.tabs.onCreated.addListener(async function () {
@@ -91,9 +100,5 @@ browser.tabs.onUpdated.addListener(async function (tabid) {
 	if (mainTab === null) return;
 	mainTab = parseInt(mainTab);
 	await querybrowser();
-}, {
-	properties: ["audible"]
 });
 
-// calling the main functions
-querybrowser();
