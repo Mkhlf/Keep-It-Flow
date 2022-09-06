@@ -77,7 +77,7 @@ browser.storage.onChanged.addListener(async function (changes) {
 });
 
 // calling the main functions
-getLatTab()
+getStatus()
 querybrowser();
 
 // calling if a new tab is created, add it and mute it if needed.
