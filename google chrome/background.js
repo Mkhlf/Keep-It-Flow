@@ -77,7 +77,7 @@ chrome.storage.onChanged.addListener(async function (changes) {
 });
 
 // calling the main functions
-getLatTab()
+getStatus()
 querychrome();
 
 // calling if a new tab is created, add it and mute it if needed.
