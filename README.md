@@ -1,5 +1,5 @@
-![Banner](storePics/Group%201.png)
-# Keep-It-Flow
+![Keep-It-Flow](storePics/Group%201.png)
+
 
 This extension will help you focus while managing the sounds in the background.
 
@@ -16,4 +16,3 @@ To get the extension:
 [Chrome](https://chrome.google.com/webstore/detail/keep-it-flow/jdmjoifadccaofklghfbnabeclbnainl?hl=en)
 
 With this extension, you will be able to enjoy your work while staying productive.
-![exp3](storePics/1Re.png)
