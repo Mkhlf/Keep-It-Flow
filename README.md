@@ -16,3 +16,7 @@ To get the extension:
 [Chrome](https://chrome.google.com/webstore/detail/keep-it-flow/jdmjoifadccaofklghfbnabeclbnainl?hl=en)
 
 With this extension, you will be able to enjoy your work while staying productive.
+
+
+Privacy:
+None of the users’ data is collected by us. All the data the app use (Tabs title and sound status) are locally stored, temporarily, while the extension is used.
